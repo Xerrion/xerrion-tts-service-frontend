@@ -4,6 +4,7 @@ import { Component } from "react";
 import VoiceSelector from "./Components/Form/VoiceSelector";
 import InterpreterSelector from "./Components/Form/InterpreterSelector";
 import AudioSource from "./Components/Audio/AudioSource";
+import axios from "axios";
 
 class App extends Component {
   constructor(props) {
@@ -21,9 +22,12 @@ class App extends Component {
       textType: "",
       audioSrc: {
         url: "",
-        type: "audio/ogg",
+        type: "",
       },
     };
+  }
+  componentDidMount() {
+    console.log(process.env)
   }
 
   addAudioElementAfterRequest = () => {
@@ -50,30 +54,32 @@ class App extends Component {
 
   #doSynthesizeRequest = async () => {
     const { inputText, voiceId, textType } = this.state;
-    const baserUrl =
-      "https://i0v1r1d86e.execute-api.eu-north-1.amazonaws.com/prod";
+    const baserUrl = process.env.BASE_URL;
 
     if (inputText && voiceId && textType) {
-      const res = await fetch(`${baserUrl}/synthesize`, {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "*/*",
-        },
-        body: JSON.stringify({
-          inputText,
+      const res = await axios.post(
+        baserUrl,
+        {
+          text: inputText,
           voiceId,
           textType,
-        }),
-      });
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "X-API-KEY": process.env.API_KEY,
+          },
+        }
+      );
+
+      console.log(res.data)
 
       this.#setAudioSrc(
         "https://filesamples.com/samples/audio/ogg/Symphony%20No.6%20(1st%20movement).ogg",
         "audio/ogg"
       );
 
-      console.log(await res.text());
+      //console.log(await res.text());
     } else {
       console.log("Missing parameters");
     }

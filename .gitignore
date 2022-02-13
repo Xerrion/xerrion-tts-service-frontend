@@ -24,3 +24,4 @@ yarn-error.log*
 ../../../tts-frontend-non-ts/.idea/
 .env
 .idea/
+.env
