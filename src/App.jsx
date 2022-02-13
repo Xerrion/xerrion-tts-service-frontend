@@ -76,8 +76,6 @@ class App extends Component {
         "https://filesamples.com/samples/audio/ogg/Symphony%20No.6%20(1st%20movement).ogg",
         "audio/ogg"
       );
-
-      //console.log(await res.text());
     } else {
       console.log("Missing parameters");
     }
