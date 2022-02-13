@@ -6,6 +6,8 @@ import InterpreterSelector from "./Components/Form/InterpreterSelector";
 import AudioSource from "./Components/Audio/AudioSource";
 import axios from "axios";
 
+const { REACT_APP_API_KEY, REACT_APP_BASE_URL } = process.env;
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -25,9 +27,6 @@ class App extends Component {
         type: "",
       },
     };
-  }
-  componentDidMount() {
-    console.log(process.env)
   }
 
   addAudioElementAfterRequest = () => {
@@ -54,11 +53,10 @@ class App extends Component {
 
   #doSynthesizeRequest = async () => {
     const { inputText, voiceId, textType } = this.state;
-    const baserUrl = process.env.BASE_URL;
 
     if (inputText && voiceId && textType) {
       const res = await axios.post(
-        baserUrl,
+        REACT_APP_BASE_URL,
         {
           text: inputText,
           voiceId,
@@ -67,12 +65,12 @@ class App extends Component {
         {
           headers: {
             "Content-Type": "application/json",
-            "X-API-KEY": process.env.API_KEY,
+            "X-API-KEY": REACT_APP_API_KEY,
           },
         }
       );
 
-      console.log(res.data)
+      console.log(res.data);
 
       this.#setAudioSrc(
         "https://filesamples.com/samples/audio/ogg/Symphony%20No.6%20(1st%20movement).ogg",
