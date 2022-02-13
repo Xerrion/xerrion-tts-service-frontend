@@ -4,7 +4,6 @@ import { Component } from "react";
 import VoiceSelector from "./Components/Form/VoiceSelector";
 import InterpreterSelector from "./Components/Form/InterpreterSelector";
 import AudioSource from "./Components/Audio/AudioSource";
-import axios from "axios";
 
 const { REACT_APP_API_KEY, REACT_APP_BASE_URL } = process.env;
 
@@ -55,27 +54,27 @@ class App extends Component {
     const { inputText, voiceId, textType } = this.state;
 
     if (inputText && voiceId && textType) {
-      const res = await axios.post(
-        REACT_APP_BASE_URL,
-        {
-          text: inputText,
+      const baseUrl = new Request(REACT_APP_BASE_URL);
+
+      const req_option = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-KEY": REACT_APP_API_KEY,
+        },
+        mode: "cors",
+        body: JSON.stringify({
+          inputText,
           voiceId,
           textType,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "X-API-KEY": REACT_APP_API_KEY,
-          },
-        }
-      );
+        }),
+      };
 
-      console.log(res.data);
-
-      this.#setAudioSrc(
-        "https://filesamples.com/samples/audio/ogg/Symphony%20No.6%20(1st%20movement).ogg",
-        "audio/ogg"
-      );
+      fetch(baseUrl, req_option)
+        .then((res) => res.json())
+        .then((res) => {
+          this.#setAudioSrc(res.body, res.contentType);
+        });
     } else {
       console.log("Missing parameters");
     }
