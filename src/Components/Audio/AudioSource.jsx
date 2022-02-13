@@ -8,7 +8,10 @@ class AudioSource extends Component {
   render() {
     return (
       <audio controls className="w-full ">
-        <source src={this.props.src} type={this.props.type} />
+        <source
+          src={`data:${this.props.type};` + this.props.src}
+          type={this.props.type}
+        />
       </audio>
     );
   }
